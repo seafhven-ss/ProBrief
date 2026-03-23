@@ -1,0 +1,16 @@
+﻿Scene: booth.
+
+Interpret the request as an exhibition booth / trade show stand brief.
+Focus on:
+- stand goals
+- visitor flow
+- display + reception balance
+- venue constraints and schedule pressure
+- exhibitor preparation dependencies
+
+Do not output retail store operation items such as:
+- 收银
+- 试衣
+- 补货
+- 仓储
+- 坪效

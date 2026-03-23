@@ -1,0 +1,11 @@
+﻿Scene: commercial.
+
+Interpret the request as commercial space upgrade / office-display space / brand pop-up.
+Focus on:
+- concept and business purpose alignment
+- scope of upgrade
+- technical feasibility at a high level
+- operations impact
+- phase planning and stakeholder alignment
+
+Do not output booth-only or retail-operation-only reminders unless truly universal.
