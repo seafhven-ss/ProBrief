@@ -5,7 +5,14 @@ import type { BriefInput, BriefOutput } from "@/lib/types";
 import { generateBrief } from "@/lib/generator";
 import OutputCard from "./OutputCard";
 
-const PROJECT_TYPES = ["零售门店", "展会展台", "品牌快闪", "商业空间升级", "办公/展示空间", "其他"];
+const PROJECT_TYPES = [
+  { value: "零售门店", label: "零售门店 Retail Store" },
+  { value: "展会展台", label: "展会展台 Exhibition Booth" },
+  { value: "品牌快闪", label: "品牌快闪 Brand Pop-up" },
+  { value: "商业空间升级", label: "商业空间升级 Commercial Upgrade" },
+  { value: "办公/展示空间", label: "办公/展示空间 Office & Showroom" },
+  { value: "其他", label: "其他 Other" },
+];
 
 const EXAMPLES: { label: string; type: string; description: string; budget?: string; timeline?: string }[] = [
   {
@@ -95,7 +102,7 @@ export default function BriefForm() {
   return (
     <div className="grid md:grid-cols-2 gap-10">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <FormField label="项目名称" optional>
+        <FormField label="项目名称 Project Name" optional>
           <input
             type="text"
             value={input.projectName}
@@ -105,22 +112,22 @@ export default function BriefForm() {
           />
         </FormField>
 
-        <FormField label="项目类型">
+        <FormField label="项目类型 Project Type">
           <select
             value={input.projectType}
             onChange={(e) => setInput({ ...input, projectType: e.target.value })}
             className="w-full px-4 py-2.5 border rounded-none text-sm"
           >
-            <option value="">选择类型</option>
-            {PROJECT_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
+            <option value="">选择类型 Select Type</option>
+            {PROJECT_TYPES.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
               </option>
             ))}
           </select>
         </FormField>
 
-        <FormField label="项目需求描述" required hint="用自然语言描述项目需求，写得越具体，生成的 brief 越准确。">
+        <FormField label="项目需求描述 Description" required hint="用自然语言描述项目需求，写得越具体，生成的 brief 越准确。">
           <textarea
             value={input.description}
             onChange={(e) => setInput({ ...input, description: e.target.value })}
@@ -142,7 +149,7 @@ export default function BriefForm() {
           </div>
         </FormField>
 
-        <FormField label="预算情况" optional>
+        <FormField label="预算情况 Budget" optional>
           <input
             type="text"
             value={input.budget}
@@ -152,7 +159,7 @@ export default function BriefForm() {
           />
         </FormField>
 
-        <FormField label="时间要求" optional>
+        <FormField label="时间要求 Timeline" optional>
           <input
             type="text"
             value={input.timeline}

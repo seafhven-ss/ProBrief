@@ -46,7 +46,7 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
   return (
     <div className="border border-neutral-800 p-6 space-y-8 min-h-[500px]">
       <section>
-        <SectionLabel num="01">Project Overview</SectionLabel>
+        <SectionLabel num="01">项目概述 Project Overview</SectionLabel>
         <h2 className="text-xl font-semibold mb-2 tracking-tight">{output.summary.title}</h2>
         <p className="text-neutral-400 text-sm leading-relaxed">{output.summary.overview}</p>
         <div className="mt-3">
@@ -57,7 +57,7 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
       <Divider />
 
       <section>
-        <SectionLabel num="02">Requirements</SectionLabel>
+        <SectionLabel num="02">需求拆解 Requirements</SectionLabel>
         <ul className="space-y-3">
           {output.requirements.map((r, i) => (
             <li key={i} className="flex items-start gap-3 text-sm">
@@ -78,7 +78,7 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
         <>
           <Divider />
           <section>
-            <SectionLabel num="03">Missing Information</SectionLabel>
+            <SectionLabel num="03">缺失信息 Missing Information</SectionLabel>
             <ul className="space-y-2">
               {output.missingInfo.map((m, i) => (
                 <li key={i} className="text-sm flex items-start gap-3">
@@ -100,7 +100,7 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
       <Divider />
 
       <section>
-        <SectionLabel num="04">Risks</SectionLabel>
+        <SectionLabel num="04">风险与难点 Risks</SectionLabel>
         <ul className="space-y-2">
           {output.risks.map((r, i) => (
             <li key={i} className="text-sm flex items-start gap-3">
@@ -120,7 +120,7 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
       <Divider />
 
       <section>
-        <SectionLabel num="05">Next Steps</SectionLabel>
+        <SectionLabel num="05">下一步建议 Next Steps</SectionLabel>
         <ol className="space-y-3">
           {output.nextSteps.map((s) => (
             <li key={s.order} className="text-sm flex gap-4">
@@ -140,7 +140,7 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
         <>
           <Divider />
           <section>
-            <SectionLabel num="06">Proposal Angles</SectionLabel>
+            <SectionLabel num="06">提案切入建议 Proposal Angles</SectionLabel>
             <div className="space-y-4">
               {output.proposalAngles.map((a, i) => (
                 <div key={i} className="text-sm border-l border-neutral-700 pl-4">
