@@ -4,7 +4,7 @@ export default function Hero() {
   return (
     <section className="min-h-[70vh] flex flex-col justify-center items-center text-center px-4 py-20 max-w-2xl mx-auto">
       <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">
-        AI Proposal / Brief Builder
+        ProBrief
       </h1>
       <p className="text-lg text-gray-500 mb-8 max-w-md">
         生成专业的项目提案和需求文档。输入关键信息，AI 帮你快速构建完整结构。

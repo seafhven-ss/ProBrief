@@ -1,4 +1,4 @@
-# Brief Builder 短视频脚本
+# ProBrief 短视频脚本
 
 ---
 
@@ -22,9 +22,9 @@
 
 **【场景3】转折 — 2秒**
 
-画面：屏幕切到 Brief Builder 界面，干净的表单页面。
+画面：屏幕切到 ProBrief 界面，干净的表单页面。
 
-旁白：「直到我找到了这个工具——Brief Builder。」
+旁白：「直到我找到了这个工具——ProBrief。」
 
 ---
 

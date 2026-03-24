@@ -1,10 +1,10 @@
-# Brief Builder
+# ProBrief
 
 把模糊的项目需求变成结构化的提案文档。填表单，出 Brief。
 
 Turn vague project requests into structured proposal briefs. Fill a form, get a Brief.
 
-<!-- **[Live Demo →](https://brief-builder.vercel.app)** -->
+<!-- **[Live Demo →](https://probrief.vercel.app)** -->
 
 ---
 
@@ -12,9 +12,9 @@ Turn vague project requests into structured proposal briefs. Fill a form, get a 
 
 写项目提案是一件重复且容易遗漏的事：每次从空白文档开始，格式不统一，关键信息靠经验记忆。
 
-Brief Builder 把 Brief 写作变成 **填表 → 生成** 的流程。你填写项目基本信息，它输出一份包含需求拆解、缺失信息提醒、风险评估和下一步行动的完整 Brief。
+ProBrief 把 Brief 写作变成 **填表 → 生成** 的流程。你填写项目基本信息，它输出一份包含需求拆解、缺失信息提醒、风险评估和下一步行动的完整 Brief。
 
-Writing project proposals is repetitive and error-prone. Brief Builder turns it into a **form → structured output** workflow. You describe the project, it generates a complete brief with requirements breakdown, missing info alerts, risk assessment, and next steps.
+Writing project proposals is repetitive and error-prone. ProBrief turns it into a **form → structured output** workflow. You describe the project, it generates a complete brief with requirements breakdown, missing info alerts, risk assessment, and next steps.
 
 ## 核心功能 / Features
 
@@ -38,8 +38,8 @@ Writing project proposals is repetitive and error-prone. Brief Builder turns it 
 ## 快速开始 / Quick Start
 
 ```bash
-git clone https://github.com/seafhven-ss/brief-builder.git
-cd brief-builder
+git clone https://github.com/seafhven-ss/ProBrief.git
+cd ProBrief
 npm install
 
 # 配置 LLM（复制并填入 API Key）
@@ -66,7 +66,7 @@ npm run dev
 ## 项目结构 / Project Structure
 
 ```
-brief-builder/
+ProBrief/
 ├── app/
 │   ├── page.tsx                    # 首页
 │   ├── builder/page.tsx            # Brief 生成器主页面
