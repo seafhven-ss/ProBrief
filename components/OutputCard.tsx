@@ -1,30 +1,30 @@
-﻿"use client";
+"use client";
 
 import type { BriefOutput, FactsSnapshotDebug, FilteredItemDebug, RuleDebugEntry } from "@/lib/types";
 import { useState } from "react";
 
-const SEVERITY_COLOR: Record<string, string> = {
-  high: "text-red-600 bg-red-50",
-  medium: "text-yellow-700 bg-yellow-50",
-  low: "text-green-700 bg-green-50",
+const SEVERITY_STYLE: Record<string, string> = {
+  high: "text-red-400 bg-red-950/50 border-red-900/50",
+  medium: "text-amber-400 bg-amber-950/50 border-amber-900/50",
+  low: "text-emerald-400 bg-emerald-950/50 border-emerald-900/50",
 };
 
-const IMPACT_COLOR: Record<string, string> = {
-  blocking: "text-red-600 bg-red-50",
-  important: "text-yellow-700 bg-yellow-50",
-  optional: "text-gray-500 bg-gray-50",
+const IMPACT_STYLE: Record<string, string> = {
+  blocking: "text-red-400 bg-red-950/50 border-red-900/50",
+  important: "text-amber-400 bg-amber-950/50 border-amber-900/50",
+  optional: "text-neutral-400 bg-neutral-900/50 border-neutral-800",
 };
 
-const PRIORITY_COLOR: Record<string, string> = {
-  high: "text-red-600",
-  medium: "text-yellow-700",
-  low: "text-gray-400",
+const PRIORITY_STYLE: Record<string, string> = {
+  high: "text-red-400",
+  medium: "text-amber-400",
+  low: "text-neutral-500",
 };
 
 const PRIORITY_LABEL: Record<string, string> = {
-  high: "高",
-  medium: "中",
-  low: "低",
+  high: "HIGH",
+  medium: "MED",
+  low: "LOW",
 };
 
 export default function OutputCard({ output }: { output: BriefOutput }) {
@@ -44,27 +44,30 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-6 space-y-6 min-h-[500px]">
+    <div className="border border-neutral-800 p-6 space-y-8 min-h-[500px]">
       <section>
-        <SectionLabel>1. 项目概述</SectionLabel>
-        <h2 className="text-lg font-semibold mb-1">{output.summary.title}</h2>
-        <p className="text-gray-700 text-sm leading-relaxed">{output.summary.overview}</p>
-        <div className="mt-2">
+        <SectionLabel num="01">Project Overview</SectionLabel>
+        <h2 className="text-xl font-semibold mb-2 tracking-tight">{output.summary.title}</h2>
+        <p className="text-neutral-400 text-sm leading-relaxed">{output.summary.overview}</p>
+        <div className="mt-3">
           <Tag>{output.summary.projectType}</Tag>
         </div>
       </section>
 
+      <Divider />
+
       <section>
-        <SectionLabel>2. 关键需求拆解</SectionLabel>
-        <ul className="space-y-2">
+        <SectionLabel num="02">Requirements</SectionLabel>
+        <ul className="space-y-3">
           {output.requirements.map((r, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm">
-              <span className={`mt-0.5 font-semibold shrink-0 ${PRIORITY_COLOR[r.priority]}`}>
+            <li key={i} className="flex items-start gap-3 text-sm">
+              <span className={`mt-0.5 font-mono text-[10px] font-bold shrink-0 ${PRIORITY_STYLE[r.priority]}`}>
                 [{PRIORITY_LABEL[r.priority]}]
               </span>
               <span>
-                <span className="font-medium">{r.category}：</span>
-                <span className="text-gray-600">{r.description}</span>
+                <span className="font-medium text-neutral-200">{r.category}</span>
+                <span className="text-neutral-500 mx-1.5">/</span>
+                <span className="text-neutral-400">{r.description}</span>
               </span>
             </li>
           ))}
@@ -72,52 +75,61 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
       </section>
 
       {output.missingInfo.length > 0 && (
-        <section>
-          <SectionLabel>3. 当前缺失信息</SectionLabel>
-          <ul className="space-y-2">
-            {output.missingInfo.map((m, i) => (
-              <li key={i} className="text-sm flex items-start gap-2">
-                <span className={`shrink-0 px-1.5 py-0.5 rounded text-xs font-medium ${IMPACT_COLOR[m.impact]}`}>
-                  {m.impact === "blocking" ? "阻塞" : m.impact === "important" ? "重要" : "可选"}
-                </span>
-                <span>
-                  <span className="font-medium">{m.field}：</span>
-                  <span className="text-gray-600">{m.reason}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <>
+          <Divider />
+          <section>
+            <SectionLabel num="03">Missing Information</SectionLabel>
+            <ul className="space-y-2">
+              {output.missingInfo.map((m, i) => (
+                <li key={i} className="text-sm flex items-start gap-3">
+                  <span className={`shrink-0 px-2 py-0.5 border text-[10px] font-mono font-bold ${IMPACT_STYLE[m.impact]}`}>
+                    {m.impact === "blocking" ? "BLOCK" : m.impact === "important" ? "WARN" : "INFO"}
+                  </span>
+                  <span>
+                    <span className="font-medium text-neutral-200">{m.field}</span>
+                    <span className="text-neutral-500 mx-1.5">/</span>
+                    <span className="text-neutral-400">{m.reason}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </>
       )}
 
+      <Divider />
+
       <section>
-        <SectionLabel>4. 风险与难点</SectionLabel>
+        <SectionLabel num="04">Risks</SectionLabel>
         <ul className="space-y-2">
           {output.risks.map((r, i) => (
-            <li key={i} className="text-sm flex items-start gap-2">
-              <span className={`shrink-0 px-1.5 py-0.5 rounded text-xs font-medium ${SEVERITY_COLOR[r.severity]}`}>
-                {r.severity === "high" ? "高" : r.severity === "medium" ? "中" : "低"}
+            <li key={i} className="text-sm flex items-start gap-3">
+              <span className={`shrink-0 px-2 py-0.5 border text-[10px] font-mono font-bold ${SEVERITY_STYLE[r.severity]}`}>
+                {r.severity === "high" ? "HIGH" : r.severity === "medium" ? "MED" : "LOW"}
               </span>
               <span>
-                <span className="font-medium">{r.type}：</span>
-                <span className="text-gray-600">{r.description}</span>
+                <span className="font-medium text-neutral-200">{r.type}</span>
+                <span className="text-neutral-500 mx-1.5">/</span>
+                <span className="text-neutral-400">{r.description}</span>
               </span>
             </li>
           ))}
         </ul>
       </section>
 
+      <Divider />
+
       <section>
-        <SectionLabel>5. 下一步建议</SectionLabel>
-        <ol className="space-y-2">
+        <SectionLabel num="05">Next Steps</SectionLabel>
+        <ol className="space-y-3">
           {output.nextSteps.map((s) => (
-            <li key={s.order} className="text-sm flex gap-3">
-              <span className="shrink-0 w-5 h-5 rounded-full bg-black text-white text-xs flex items-center justify-center font-medium">
-                {s.order}
+            <li key={s.order} className="text-sm flex gap-4">
+              <span className="shrink-0 w-6 h-6 border border-neutral-700 text-neutral-400 text-[10px] font-mono flex items-center justify-center">
+                {String(s.order).padStart(2, "0")}
               </span>
               <span>
-                <span className="text-gray-800">{s.action}</span>
-                <span className="text-gray-400 ml-2">- {s.owner}</span>
+                <span className="text-neutral-200">{s.action}</span>
+                <span className="text-neutral-600 ml-2 text-xs">— {s.owner}</span>
               </span>
             </li>
           ))}
@@ -125,25 +137,28 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
       </section>
 
       {output.proposalAngles.length > 0 && (
-        <section>
-          <SectionLabel>6. 提案切入建议</SectionLabel>
-          <div className="space-y-3">
-            {output.proposalAngles.map((a, i) => (
-              <div key={i} className="text-sm border-l-2 border-gray-200 pl-3">
-                <p className="font-medium text-gray-800">{a.angle}</p>
-                <p className="text-gray-500 mt-0.5">{a.reasoning}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        <>
+          <Divider />
+          <section>
+            <SectionLabel num="06">Proposal Angles</SectionLabel>
+            <div className="space-y-4">
+              {output.proposalAngles.map((a, i) => (
+                <div key={i} className="text-sm border-l border-neutral-700 pl-4">
+                  <p className="font-medium text-neutral-200">{a.angle}</p>
+                  <p className="text-neutral-500 mt-1 text-xs leading-relaxed">{a.reasoning}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
       )}
 
-      <div className="pt-4 border-t border-gray-100 flex gap-3">
-        <button onClick={handleCopy} className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">
-          复制
+      <div className="pt-6 border-t border-neutral-800 flex gap-3">
+        <button onClick={handleCopy} className="px-5 py-2 text-xs border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors tracking-wide uppercase">
+          Copy
         </button>
-        <button onClick={handleDownload} className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50">
-          下载
+        <button onClick={handleDownload} className="px-5 py-2 text-xs border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors tracking-wide uppercase">
+          Download
         </button>
       </div>
 
@@ -159,12 +174,21 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
   );
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{children}</h3>;
+function SectionLabel({ num, children }: { num: string; children: React.ReactNode }) {
+  return (
+    <h3 className="flex items-center gap-3 text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-[0.2em] mb-4">
+      <span className="text-neutral-700">{num}</span>
+      {children}
+    </h3>
+  );
+}
+
+function Divider() {
+  return <div className="h-px bg-neutral-800/50" />;
 }
 
 function Tag({ children }: { children: React.ReactNode }) {
-  return <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">{children}</span>;
+  return <span className="px-3 py-1 border border-neutral-700 text-neutral-400 text-[10px] font-mono tracking-wide uppercase">{children}</span>;
 }
 
 function FullDebugPanel({
@@ -184,43 +208,43 @@ function FullDebugPanel({
   const removedCount = filteredItems?.filter((f) => f.action === "removed").length ?? 0;
 
   return (
-    <div className="border-t border-dashed border-gray-200 pt-4">
-      <button onClick={() => setOpen(!open)} className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1">
+    <div className="border-t border-dashed border-neutral-800 pt-4">
+      <button onClick={() => setOpen(!open)} className="text-[10px] text-neutral-600 hover:text-neutral-400 flex items-center gap-2 font-mono tracking-wide">
         <span>{open ? "▾" : "▸"}</span>
         <span>
-          调试面板（规则 {hitCount}/{totalRules} 命中{removedCount > 0 ? `，过滤 ${removedCount} 项` : ""}{demoSafeMode ? "，SafeMode ON" : ""}）
+          DEBUG — rules {hitCount}/{totalRules}{removedCount > 0 ? ` / filtered ${removedCount}` : ""}{demoSafeMode ? " / SafeMode ON" : ""}
         </span>
       </button>
       {open && (
         <div className="mt-3 space-y-4">
           {facts && (
             <div>
-              <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Extracted Facts</div>
-              <div className="text-xs bg-blue-50 border border-blue-100 rounded px-3 py-2 grid grid-cols-2 gap-x-4 gap-y-1">
-                <span>visualIdentity: <b>{facts.visualIdentityStatus}</b></span>
-                <span>budget: <b>{facts.budgetStatus}</b></span>
-                <span>timeline: <b>{facts.timelineStatus}</b></span>
-                <span>customerGroup: <b>{facts.customerGroupKnown ? "yes" : "no"}</b></span>
-                <span>area: <b>{facts.areaKnown ? facts.areaValue : "unknown"}</b></span>
-                <span>scene: <b>{facts.projectScene || "-"}</b></span>
-                <span>regions: <b>{facts.regionNormalized.length > 0 ? facts.regionNormalized.join(", ") : "none"}</b></span>
-                <span>months: <b>{facts.monthDetected.length > 0 ? facts.monthDetected.map((m) => `${m}月`).join(", ") : "none"}</b></span>
+              <div className="text-[10px] font-mono font-bold text-neutral-600 uppercase tracking-wider mb-1">Facts</div>
+              <div className="text-[11px] bg-neutral-900 border border-neutral-800 px-3 py-2 grid grid-cols-2 gap-x-4 gap-y-1 font-mono text-neutral-400">
+                <span>visualIdentity: <b className="text-neutral-200">{facts.visualIdentityStatus}</b></span>
+                <span>budget: <b className="text-neutral-200">{facts.budgetStatus}</b></span>
+                <span>timeline: <b className="text-neutral-200">{facts.timelineStatus}</b></span>
+                <span>customerGroup: <b className="text-neutral-200">{facts.customerGroupKnown ? "yes" : "no"}</b></span>
+                <span>area: <b className="text-neutral-200">{facts.areaKnown ? facts.areaValue : "unknown"}</b></span>
+                <span>scene: <b className="text-neutral-200">{facts.projectScene || "-"}</b></span>
+                <span>regions: <b className="text-neutral-200">{facts.regionNormalized.length > 0 ? facts.regionNormalized.join(", ") : "none"}</b></span>
+                <span>months: <b className="text-neutral-200">{facts.monthDetected.length > 0 ? facts.monthDetected.map((m) => `${m}月`).join(", ") : "none"}</b></span>
               </div>
             </div>
           )}
 
           {filteredItems && filteredItems.length > 0 && (
             <div>
-              <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Filtered Items</div>
+              <div className="text-[10px] font-mono font-bold text-neutral-600 uppercase tracking-wider mb-1">Filtered</div>
               <div className="space-y-1">
                 {filteredItems.map((f, i) => (
-                  <div key={i} className={`text-xs rounded px-3 py-1.5 ${f.action === "removed" ? "bg-red-50 border border-red-200" : "bg-yellow-50 border border-yellow-200"}`}>
-                    <span className={`font-mono font-semibold ${f.action === "removed" ? "text-red-600" : "text-yellow-600"}`}>
+                  <div key={i} className={`text-[11px] font-mono px-3 py-1.5 border ${f.action === "removed" ? "bg-red-950/30 border-red-900/30 text-red-400" : "bg-amber-950/30 border-amber-900/30 text-amber-400"}`}>
+                    <span className="font-bold">
                       {f.action === "removed" ? "DEL" : "RWD"}
                     </span>{" "}
-                    <span className="text-gray-500">[{f.type}]</span>{" "}
-                    <span className="font-medium text-gray-700">{f.original}</span>
-                    <span className="text-gray-400"> - {f.reason}</span>
+                    <span className="text-neutral-500">[{f.type}]</span>{" "}
+                    <span className="text-neutral-300">{f.original}</span>
+                    <span className="text-neutral-600"> — {f.reason}</span>
                   </div>
                 ))}
               </div>
@@ -242,7 +266,7 @@ function buildPlainText(o: BriefOutput): string {
   lines.push(`类型：${o.summary.projectType}`);
   lines.push("");
   lines.push("=== 2. 关键需求拆解 ===");
-  for (const r of o.requirements) lines.push(`[${PRIORITY_LABEL[r.priority]}] ${r.category}：${r.description}`);
+  for (const r of o.requirements) lines.push(`[${r.priority}] ${r.category}：${r.description}`);
   lines.push("");
   if (o.missingInfo.length > 0) {
     lines.push("=== 3. 当前缺失信息 ===");

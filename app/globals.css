@@ -1,11 +1,65 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --accent: #e5e5e5;
+  --muted: #737373;
+  --border: #262626;
+  --surface: #141414;
+  --surface-hover: #1a1a1a;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  font-feature-settings: "ss01", "ss02", "cv01";
+}
+
+/* Subtle grain texture overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Form inputs dark theme */
+input, select, textarea {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #525252 !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #525252 !important;
+  outline: none;
+}
+
+select option {
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+/* Selection */
+::selection {
+  background: rgba(255, 255, 255, 0.15);
 }

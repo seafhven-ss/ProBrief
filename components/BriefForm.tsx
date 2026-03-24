@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import type { BriefInput, BriefOutput } from "@/lib/types";
@@ -93,27 +93,23 @@ export default function BriefForm() {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-8">
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label className="block text-sm font-medium mb-1.5">
-            项目名称 <span className="text-gray-400 font-normal">（可选）</span>
-          </label>
+    <div className="grid md:grid-cols-2 gap-10">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <FormField label="项目名称" optional>
           <input
             type="text"
             value={input.projectName}
             onChange={(e) => setInput({ ...input, projectName: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-black"
+            className="w-full px-4 py-2.5 border rounded-none text-sm"
             placeholder="例如：XX 品牌苏州中心店"
           />
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block text-sm font-medium mb-1.5">项目类型</label>
+        <FormField label="项目类型">
           <select
             value={input.projectType}
             onChange={(e) => setInput({ ...input, projectType: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-black"
+            className="w-full px-4 py-2.5 border rounded-none text-sm"
           >
             <option value="">选择类型</option>
             {PROJECT_TYPES.map((type) => (
@@ -122,68 +118,63 @@ export default function BriefForm() {
               </option>
             ))}
           </select>
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block text-sm font-medium mb-1.5">
-            项目需求描述<span className="text-red-500">*</span>
-          </label>
-          <p className="text-xs text-gray-400 mb-2">
-            用自然语言描述项目需求，写得越具体，生成的 brief 越准确。
-          </p>
+        <FormField label="项目需求描述" required hint="用自然语言描述项目需求，写得越具体，生成的 brief 越准确。">
           <textarea
             value={input.description}
             onChange={(e) => setInput({ ...input, description: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-black resize-none"
+            className="w-full px-4 py-3 border rounded-none text-sm resize-none"
             rows={6}
             placeholder="例如：我们准备在商场开一家店，面积大约120㎡，希望空间有高级感……"
           />
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             {EXAMPLES.map((ex) => (
               <button
                 key={ex.label}
                 type="button"
                 onClick={() => fillExample(ex)}
-                className="px-3 py-1 text-xs border border-gray-200 rounded-full hover:bg-gray-50 hover:border-gray-300 transition-colors text-gray-500"
+                className="px-3 py-1 text-[11px] border border-neutral-700 hover:border-neutral-500 hover:text-white transition-colors text-neutral-500 tracking-wide"
               >
                 {ex.label}
               </button>
             ))}
           </div>
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block text-sm font-medium mb-1.5">
-            预算情况 <span className="text-gray-400 font-normal">（可选）</span>
-          </label>
+        <FormField label="预算情况" optional>
           <input
             type="text"
             value={input.budget}
             onChange={(e) => setInput({ ...input, budget: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-black"
+            className="w-full px-4 py-2.5 border rounded-none text-sm"
             placeholder="例如：5万 / 10-15万 / 预算有限"
           />
-        </div>
+        </FormField>
 
-        <div>
-          <label className="block text-sm font-medium mb-1.5">
-            时间要求 <span className="text-gray-400 font-normal">（可选）</span>
-          </label>
+        <FormField label="时间要求" optional>
           <input
             type="text"
             value={input.timeline}
             onChange={(e) => setInput({ ...input, timeline: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-black"
+            className="w-full px-4 py-2.5 border rounded-none text-sm"
             placeholder="例如：11月开业 / December start / 尽快"
           />
-        </div>
+        </FormField>
 
         <button
           type="submit"
           disabled={loading || !input.projectType || !input.description.trim()}
-          className="w-full py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3.5 bg-white text-black text-sm font-medium tracking-wide uppercase hover:bg-neutral-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          {loading ? "生成中..." : "生成项目 Brief"}
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="w-3.5 h-3.5 border border-black/30 border-t-black rounded-full animate-spin" />
+              Generating...
+            </span>
+          ) : (
+            "Generate Brief"
+          )}
         </button>
       </form>
 
@@ -191,19 +182,46 @@ export default function BriefForm() {
         {output ? (
           <OutputCard output={output} />
         ) : error ? (
-          <div className="border border-red-200 bg-red-50 rounded-lg min-h-[500px] p-6 flex flex-col justify-center">
-            <p className="text-sm font-medium text-red-700 mb-2">生成失败</p>
-            <p className="text-sm text-red-600 leading-relaxed">{error}</p>
+          <div className="border border-red-900/50 bg-red-950/30 min-h-[500px] p-6 flex flex-col justify-center">
+            <p className="text-sm font-medium text-red-400 mb-2">Generation Failed</p>
+            <p className="text-sm text-red-400/70 leading-relaxed">{error}</p>
           </div>
         ) : (
-          <div className="h-full flex flex-col items-center justify-center border border-dashed border-gray-200 rounded-lg min-h-[500px] px-6">
-            <p className="text-gray-300 text-sm mb-1">输出区域</p>
-            <p className="text-gray-300 text-xs text-center">
-              填写左侧需求描述并选择项目类型后，系统会生成结构化项目 Brief。
+          <div className="h-full flex flex-col items-center justify-center border border-dashed border-neutral-800 min-h-[500px] px-8">
+            <div className="w-8 h-px bg-neutral-700 mb-6" />
+            <p className="text-neutral-600 text-xs tracking-wide uppercase mb-2">Output Area</p>
+            <p className="text-neutral-700 text-xs text-center max-w-xs leading-relaxed">
+              Fill in the project description and select a type. The system will generate a structured project brief.
             </p>
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function FormField({
+  label,
+  optional,
+  required,
+  hint,
+  children,
+}: {
+  label: string;
+  optional?: boolean;
+  required?: boolean;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="block text-xs font-medium tracking-wide uppercase text-neutral-400 mb-2">
+        {label}
+        {optional && <span className="text-neutral-600 font-normal lowercase tracking-normal ml-2">optional</span>}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+      {hint && <p className="text-[11px] text-neutral-600 mb-2">{hint}</p>}
+      {children}
     </div>
   );
 }
