@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import type { BriefInput, BriefOutput, MissingInfo, ProposalAngle, Requirement, Risk } from "@/lib/types";
 import { applyLocalSafeguards, normalizeApiOutput, preprocessBriefInput } from "@/lib/demo-safeguards";
 import { extractFacts } from "@/lib/facts";
 import type { FactsSnapshot } from "@/lib/facts";
 import { runRuleEngine } from "@/lib/rule-engine";
 import { filterConflicts } from "@/lib/conflict-filter";
+import { SYSTEM_PROMPT, getScenePrompt } from "@/lib/prompts";
 
 interface GenerateBriefRequestBody {
   input: BriefInput;
@@ -96,10 +95,6 @@ const schema = {
     },
   },
 } as const;
-
-async function loadPrompt(name: string): Promise<string> {
-  return readFile(path.join(process.cwd(), "prompts", name), "utf8");
-}
 
 function getScenePromptFile(projectType: string): string {
   if (projectType === "零售门店") return "retail.txt";
@@ -251,15 +246,12 @@ async function callModel(input: BriefInput): Promise<BriefOutput> {
   const ruleResult = runRuleEngine(input);
 
   // Step 3: Call LLM with facts-aware prompt
-  const [systemPrompt, scenePrompt] = await Promise.all([
-    loadPrompt("system.txt"),
-    loadPrompt(getScenePromptFile(input.projectType)),
-  ]);
+  const scenePrompt = getScenePrompt(input.projectType);
 
   // Build messages — for non-schema providers, append schema instruction to system prompt
   const systemContent = llm.supportsJsonSchema
-    ? systemPrompt
-    : systemPrompt + buildJsonSchemaInstruction();
+    ? SYSTEM_PROMPT
+    : SYSTEM_PROMPT + buildJsonSchemaInstruction();
 
   const body: Record<string, unknown> = {
     model: llm.model,
