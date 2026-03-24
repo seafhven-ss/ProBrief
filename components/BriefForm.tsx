@@ -177,10 +177,13 @@ export default function BriefForm() {
           {loading ? (
             <span className="flex items-center justify-center gap-2">
               <span className="w-3.5 h-3.5 border border-black/30 border-t-black rounded-full animate-spin" />
-              Generating...
+              生成中 Generating...
             </span>
           ) : (
-            "Generate Brief"
+            <span className="flex flex-col items-center leading-tight">
+              <span>生成提案</span>
+              <span className="text-[10px] text-black/50 tracking-widest font-normal">GENERATE BRIEF</span>
+            </span>
           )}
         </button>
       </form>
@@ -190,15 +193,20 @@ export default function BriefForm() {
           <OutputCard output={output} />
         ) : error ? (
           <div className="border border-red-900/50 bg-red-950/30 min-h-[500px] p-6 flex flex-col justify-center">
-            <p className="text-sm font-medium text-red-400 mb-2">Generation Failed</p>
+            <p className="text-sm font-medium text-red-400 mb-1">生成失败</p>
+            <p className="text-[10px] text-red-500/50 tracking-wide uppercase mb-3">GENERATION FAILED</p>
             <p className="text-sm text-red-400/70 leading-relaxed">{error}</p>
           </div>
         ) : (
           <div className="h-full flex flex-col items-center justify-center border border-dashed border-neutral-800 min-h-[500px] px-8">
             <div className="w-8 h-px bg-neutral-700 mb-6" />
-            <p className="text-neutral-600 text-xs tracking-wide uppercase mb-2">Output Area</p>
-            <p className="text-neutral-700 text-xs text-center max-w-xs leading-relaxed">
-              Fill in the project description and select a type. The system will generate a structured project brief.
+            <p className="text-neutral-500 text-xs tracking-wide mb-1">输出区域</p>
+            <p className="text-neutral-700 text-[10px] tracking-widest uppercase mb-4">OUTPUT AREA</p>
+            <p className="text-neutral-600 text-xs text-center max-w-xs leading-relaxed mb-1">
+              填写项目描述并选择类型，系统将自动生成结构化项目提案。
+            </p>
+            <p className="text-neutral-700 text-[11px] text-center max-w-xs leading-relaxed">
+              Fill in the description and select a type to generate a structured brief.
             </p>
           </div>
         )}
@@ -224,7 +232,7 @@ function FormField({
     <div>
       <label className="block text-xs font-medium tracking-wide uppercase text-neutral-400 mb-2">
         {label}
-        {optional && <span className="text-neutral-600 font-normal lowercase tracking-normal ml-2">optional</span>}
+        {optional && <span className="text-neutral-600 font-normal lowercase tracking-normal ml-2">选填 optional</span>}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       {hint && <p className="text-[11px] text-neutral-600 mb-2">{hint}</p>}

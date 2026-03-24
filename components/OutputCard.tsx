@@ -154,11 +154,13 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
       )}
 
       <div className="pt-6 border-t border-neutral-800 flex gap-3">
-        <button onClick={handleCopy} className="px-5 py-2 text-xs border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors tracking-wide uppercase">
-          Copy
+        <button onClick={handleCopy} className="px-5 py-2 text-xs border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors tracking-wide">
+          <span>复制</span>
+          <span className="text-[9px] ml-1.5 tracking-widest text-neutral-600 uppercase">COPY</span>
         </button>
-        <button onClick={handleDownload} className="px-5 py-2 text-xs border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors tracking-wide uppercase">
-          Download
+        <button onClick={handleDownload} className="px-5 py-2 text-xs border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors tracking-wide">
+          <span>下载</span>
+          <span className="text-[9px] ml-1.5 tracking-widest text-neutral-600 uppercase">DOWNLOAD</span>
         </button>
       </div>
 
