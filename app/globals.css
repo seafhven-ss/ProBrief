@@ -8,11 +8,27 @@
   --border: #262626;
   --surface: #141414;
   --surface-hover: #1a1a1a;
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #111118;
+  --bg-panel: #16161F;
+  --bg-elevated: #1C1C28;
+  --text-primary: #F5F5F5;
+  --text-secondary: #B0B0C0;
+  --text-tertiary: #6B6B80;
+  --accent-indigo: #7B7FFF;
+  --accent-teal: #4DD9D5;
+  --accent-violet: #A78BFA;
+  --border-default: #2A2A3A;
+  --border-hover: #3A3A50;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --radius-md: 12px;
+  --radius-lg: 16px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
   font-feature-settings: "ss01", "ss02", "cv01";
 }
 
@@ -27,10 +43,8 @@ body::before {
 }
 
 /* Form inputs dark theme */
-input, select, textarea {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-  color: var(--foreground) !important;
+input, textarea, select {
+  color-scheme: dark;
 }
 
 input::placeholder, textarea::placeholder {
@@ -43,8 +57,8 @@ input:focus, select:focus, textarea:focus {
 }
 
 select option {
-  background: var(--surface);
-  color: var(--foreground);
+  background: var(--bg-panel);
+  color: var(--text-primary);
 }
 
 /* Scrollbar */
@@ -61,5 +75,6 @@ select option {
 
 /* Selection */
 ::selection {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(123, 127, 255, 0.3);
+  color: var(--text-primary);
 }

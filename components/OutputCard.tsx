@@ -3,22 +3,22 @@
 import type { BriefOutput, FactsSnapshotDebug, FilteredItemDebug, RuleDebugEntry } from "@/lib/types";
 import { useState } from "react";
 
-const SEVERITY_STYLE: Record<string, string> = {
-  high: "text-red-400 bg-red-950/50 border-red-900/50",
-  medium: "text-amber-400 bg-amber-950/50 border-amber-900/50",
-  low: "text-emerald-400 bg-emerald-950/50 border-emerald-900/50",
+const SEVERITY_COLOR: Record<string, React.CSSProperties> = {
+  high: { color: "#ef4444", background: "rgba(239, 68, 68, 0.1)" },
+  medium: { color: "#eab308", background: "rgba(234, 179, 8, 0.1)" },
+  low: { color: "#22c55e", background: "rgba(34, 197, 94, 0.1)" },
 };
 
-const IMPACT_STYLE: Record<string, string> = {
-  blocking: "text-red-400 bg-red-950/50 border-red-900/50",
-  important: "text-amber-400 bg-amber-950/50 border-amber-900/50",
-  optional: "text-neutral-400 bg-neutral-900/50 border-neutral-800",
+const IMPACT_COLOR: Record<string, React.CSSProperties> = {
+  blocking: { color: "#ef4444", background: "rgba(239, 68, 68, 0.1)" },
+  important: { color: "#eab308", background: "rgba(234, 179, 8, 0.1)" },
+  optional: { color: "var(--text-tertiary)", background: "var(--bg-elevated)" },
 };
 
-const PRIORITY_STYLE: Record<string, string> = {
-  high: "text-red-400",
-  medium: "text-amber-400",
-  low: "text-neutral-500",
+const PRIORITY_COLOR: Record<string, string> = {
+  high: "#ef4444",
+  medium: "#eab308",
+  low: "var(--text-tertiary)",
 };
 
 const PRIORITY_LABEL: Record<string, string> = {
@@ -44,12 +44,19 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
   };
 
   return (
-    <div className="border border-neutral-800 p-6 space-y-8 min-h-[500px]">
+    <div
+      className="rounded-lg p-6 space-y-6 min-h-[500px]"
+      style={{
+        border: "1px solid var(--border-default)",
+        background: "var(--bg-panel)",
+        boxShadow: "var(--shadow-card)",
+      }}
+    >
       <section>
         <SectionLabel num="01">项目概述 Project Overview</SectionLabel>
-        <h2 className="text-xl font-semibold mb-2 tracking-tight">{output.summary.title}</h2>
-        <p className="text-neutral-400 text-sm leading-relaxed">{output.summary.overview}</p>
-        <div className="mt-3">
+        <h2 className="text-lg font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{output.summary.title}</h2>
+        <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{output.summary.overview}</p>
+        <div className="mt-2">
           <Tag>{output.summary.projectType}</Tag>
         </div>
       </section>
@@ -60,14 +67,14 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
         <SectionLabel num="02">需求拆解 Requirements</SectionLabel>
         <ul className="space-y-3">
           {output.requirements.map((r, i) => (
-            <li key={i} className="flex items-start gap-3 text-sm">
-              <span className={`mt-0.5 font-mono text-[10px] font-bold shrink-0 ${PRIORITY_STYLE[r.priority]}`}>
+            <li key={i} className="flex items-start gap-2 text-sm">
+              <span className="mt-0.5 font-semibold shrink-0 font-mono text-[10px]" style={{ color: PRIORITY_COLOR[r.priority] }}>
                 [{PRIORITY_LABEL[r.priority]}]
               </span>
               <span>
-                <span className="font-medium text-neutral-200">{r.category}</span>
-                <span className="text-neutral-500 mx-1.5">/</span>
-                <span className="text-neutral-400">{r.description}</span>
+                <span className="font-medium" style={{ color: "var(--text-primary)" }}>{r.category}</span>
+                <span style={{ color: "var(--text-tertiary)" }}> / </span>
+                <span style={{ color: "var(--text-secondary)" }}>{r.description}</span>
               </span>
             </li>
           ))}
@@ -81,14 +88,17 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
             <SectionLabel num="03">缺失信息 Missing Information</SectionLabel>
             <ul className="space-y-2">
               {output.missingInfo.map((m, i) => (
-                <li key={i} className="text-sm flex items-start gap-3">
-                  <span className={`shrink-0 px-2 py-0.5 border text-[10px] font-mono font-bold ${IMPACT_STYLE[m.impact]}`}>
+                <li key={i} className="text-sm flex items-start gap-2">
+                  <span
+                    className="shrink-0 px-1.5 py-0.5 rounded text-xs font-medium font-mono"
+                    style={IMPACT_COLOR[m.impact]}
+                  >
                     {m.impact === "blocking" ? "BLOCK" : m.impact === "important" ? "WARN" : "INFO"}
                   </span>
                   <span>
-                    <span className="font-medium text-neutral-200">{m.field}</span>
-                    <span className="text-neutral-500 mx-1.5">/</span>
-                    <span className="text-neutral-400">{m.reason}</span>
+                    <span className="font-medium" style={{ color: "var(--text-primary)" }}>{m.field}</span>
+                    <span style={{ color: "var(--text-tertiary)" }}> / </span>
+                    <span style={{ color: "var(--text-secondary)" }}>{m.reason}</span>
                   </span>
                 </li>
               ))}
@@ -103,14 +113,17 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
         <SectionLabel num="04">风险与难点 Risks</SectionLabel>
         <ul className="space-y-2">
           {output.risks.map((r, i) => (
-            <li key={i} className="text-sm flex items-start gap-3">
-              <span className={`shrink-0 px-2 py-0.5 border text-[10px] font-mono font-bold ${SEVERITY_STYLE[r.severity]}`}>
+            <li key={i} className="text-sm flex items-start gap-2">
+              <span
+                className="shrink-0 px-1.5 py-0.5 rounded text-xs font-medium font-mono"
+                style={SEVERITY_COLOR[r.severity]}
+              >
                 {r.severity === "high" ? "HIGH" : r.severity === "medium" ? "MED" : "LOW"}
               </span>
               <span>
-                <span className="font-medium text-neutral-200">{r.type}</span>
-                <span className="text-neutral-500 mx-1.5">/</span>
-                <span className="text-neutral-400">{r.description}</span>
+                <span className="font-medium" style={{ color: "var(--text-primary)" }}>{r.type}</span>
+                <span style={{ color: "var(--text-tertiary)" }}> / </span>
+                <span style={{ color: "var(--text-secondary)" }}>{r.description}</span>
               </span>
             </li>
           ))}
@@ -123,13 +136,16 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
         <SectionLabel num="05">下一步建议 Next Steps</SectionLabel>
         <ol className="space-y-3">
           {output.nextSteps.map((s) => (
-            <li key={s.order} className="text-sm flex gap-4">
-              <span className="shrink-0 w-6 h-6 border border-neutral-700 text-neutral-400 text-[10px] font-mono flex items-center justify-center">
-                {String(s.order).padStart(2, "0")}
+            <li key={s.order} className="text-sm flex gap-3">
+              <span
+                className="shrink-0 w-5 h-5 rounded-full text-xs flex items-center justify-center font-medium"
+                style={{ background: "var(--accent-indigo)", color: "#ffffff" }}
+              >
+                {s.order}
               </span>
               <span>
-                <span className="text-neutral-200">{s.action}</span>
-                <span className="text-neutral-600 ml-2 text-xs">— {s.owner}</span>
+                <span style={{ color: "var(--text-primary)" }}>{s.action}</span>
+                <span className="ml-2" style={{ color: "var(--text-tertiary)" }}>— {s.owner}</span>
               </span>
             </li>
           ))}
@@ -141,11 +157,15 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
           <Divider />
           <section>
             <SectionLabel num="06">提案切入建议 Proposal Angles</SectionLabel>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {output.proposalAngles.map((a, i) => (
-                <div key={i} className="text-sm border-l border-neutral-700 pl-4">
-                  <p className="font-medium text-neutral-200">{a.angle}</p>
-                  <p className="text-neutral-500 mt-1 text-xs leading-relaxed">{a.reasoning}</p>
+                <div
+                  key={i}
+                  className="text-sm pl-3"
+                  style={{ borderLeft: "2px solid var(--border-default)" }}
+                >
+                  <p className="font-medium" style={{ color: "var(--text-primary)" }}>{a.angle}</p>
+                  <p className="mt-0.5" style={{ color: "var(--text-tertiary)" }}>{a.reasoning}</p>
                 </div>
               ))}
             </div>
@@ -153,14 +173,28 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
         </>
       )}
 
-      <div className="pt-6 border-t border-neutral-800 flex gap-3">
-        <button onClick={handleCopy} className="px-5 py-2 text-xs border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors tracking-wide">
-          <span>复制</span>
-          <span className="text-[9px] ml-1.5 tracking-widest text-neutral-600 uppercase">COPY</span>
+      <div className="pt-4 flex gap-3" style={{ borderTop: "1px solid var(--border-default)" }}>
+        <button
+          onClick={handleCopy}
+          className="px-4 py-2 text-sm rounded-lg transition-colors duration-200"
+          style={{
+            border: "1px solid var(--border-default)",
+            color: "var(--text-secondary)",
+            background: "transparent",
+          }}
+        >
+          复制 <span className="text-[9px] ml-1 tracking-widest uppercase opacity-60">COPY</span>
         </button>
-        <button onClick={handleDownload} className="px-5 py-2 text-xs border border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500 transition-colors tracking-wide">
-          <span>下载</span>
-          <span className="text-[9px] ml-1.5 tracking-widest text-neutral-600 uppercase">DOWNLOAD</span>
+        <button
+          onClick={handleDownload}
+          className="px-4 py-2 text-sm rounded-lg transition-colors duration-200"
+          style={{
+            border: "1px solid var(--border-default)",
+            color: "var(--text-secondary)",
+            background: "transparent",
+          }}
+        >
+          下载 <span className="text-[9px] ml-1 tracking-widest uppercase opacity-60">DOWNLOAD</span>
         </button>
       </div>
 
@@ -178,19 +212,26 @@ export default function OutputCard({ output }: { output: BriefOutput }) {
 
 function SectionLabel({ num, children }: { num: string; children: React.ReactNode }) {
   return (
-    <h3 className="flex items-center gap-3 text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-[0.2em] mb-4">
-      <span className="text-neutral-700">{num}</span>
+    <h3 className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.2em] mb-3" style={{ color: "var(--accent-indigo)" }}>
+      <span style={{ color: "var(--text-tertiary)" }}>{num}</span>
       {children}
     </h3>
   );
 }
 
 function Divider() {
-  return <div className="h-px bg-neutral-800/50" />;
+  return <div className="h-px" style={{ background: "var(--border-default)", opacity: 0.5 }} />;
 }
 
 function Tag({ children }: { children: React.ReactNode }) {
-  return <span className="px-3 py-1 border border-neutral-700 text-neutral-400 text-[10px] font-mono tracking-wide uppercase">{children}</span>;
+  return (
+    <span
+      className="px-2 py-0.5 text-xs rounded"
+      style={{ background: "var(--bg-elevated)", color: "var(--text-secondary)" }}
+    >
+      {children}
+    </span>
+  );
 }
 
 function FullDebugPanel({
@@ -210,9 +251,13 @@ function FullDebugPanel({
   const removedCount = filteredItems?.filter((f) => f.action === "removed").length ?? 0;
 
   return (
-    <div className="border-t border-dashed border-neutral-800 pt-4">
-      <button onClick={() => setOpen(!open)} className="text-[10px] text-neutral-600 hover:text-neutral-400 flex items-center gap-2 font-mono tracking-wide">
-        <span>{open ? "▾" : "▸"}</span>
+    <div className="pt-4" style={{ borderTop: "1px dashed var(--border-default)" }}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="text-xs flex items-center gap-1 transition-colors duration-200 font-mono"
+        style={{ color: "var(--text-tertiary)" }}
+      >
+        <span>{open ? "\u25BE" : "\u25B8"}</span>
         <span>
           DEBUG — rules {hitCount}/{totalRules}{removedCount > 0 ? ` / filtered ${removedCount}` : ""}{demoSafeMode ? " / SafeMode ON" : ""}
         </span>
@@ -221,32 +266,59 @@ function FullDebugPanel({
         <div className="mt-3 space-y-4">
           {facts && (
             <div>
-              <div className="text-[10px] font-mono font-bold text-neutral-600 uppercase tracking-wider mb-1">Facts</div>
-              <div className="text-[11px] bg-neutral-900 border border-neutral-800 px-3 py-2 grid grid-cols-2 gap-x-4 gap-y-1 font-mono text-neutral-400">
-                <span>visualIdentity: <b className="text-neutral-200">{facts.visualIdentityStatus}</b></span>
-                <span>budget: <b className="text-neutral-200">{facts.budgetStatus}</b></span>
-                <span>timeline: <b className="text-neutral-200">{facts.timelineStatus}</b></span>
-                <span>customerGroup: <b className="text-neutral-200">{facts.customerGroupKnown ? "yes" : "no"}</b></span>
-                <span>area: <b className="text-neutral-200">{facts.areaKnown ? facts.areaValue : "unknown"}</b></span>
-                <span>scene: <b className="text-neutral-200">{facts.projectScene || "-"}</b></span>
-                <span>regions: <b className="text-neutral-200">{facts.regionNormalized.length > 0 ? facts.regionNormalized.join(", ") : "none"}</b></span>
-                <span>months: <b className="text-neutral-200">{facts.monthDetected.length > 0 ? facts.monthDetected.map((m) => `${m}月`).join(", ") : "none"}</b></span>
+              <div
+                className="text-[10px] font-semibold uppercase tracking-wider mb-1"
+                style={{ color: "var(--text-tertiary)" }}
+              >
+                Extracted Facts
+              </div>
+              <div
+                className="text-xs rounded px-3 py-2 grid grid-cols-2 gap-x-4 gap-y-1"
+                style={{
+                  background: "rgba(123, 127, 255, 0.08)",
+                  border: "1px solid rgba(123, 127, 255, 0.2)",
+                  color: "var(--text-secondary)",
+                }}
+              >
+                <span>visualIdentity: <b>{facts.visualIdentityStatus}</b></span>
+                <span>budget: <b>{facts.budgetStatus}</b></span>
+                <span>timeline: <b>{facts.timelineStatus}</b></span>
+                <span>customerGroup: <b>{facts.customerGroupKnown ? "yes" : "no"}</b></span>
+                <span>area: <b>{facts.areaKnown ? facts.areaValue : "unknown"}</b></span>
+                <span>scene: <b>{facts.projectScene || "-"}</b></span>
+                <span>regions: <b>{facts.regionNormalized.length > 0 ? facts.regionNormalized.join(", ") : "none"}</b></span>
+                <span>months: <b>{facts.monthDetected.length > 0 ? facts.monthDetected.map((m) => `${m}月`).join(", ") : "none"}</b></span>
               </div>
             </div>
           )}
 
           {filteredItems && filteredItems.length > 0 && (
             <div>
-              <div className="text-[10px] font-mono font-bold text-neutral-600 uppercase tracking-wider mb-1">Filtered</div>
+              <div
+                className="text-[10px] font-semibold uppercase tracking-wider mb-1"
+                style={{ color: "var(--text-tertiary)" }}
+              >
+                Filtered Items
+              </div>
               <div className="space-y-1">
                 {filteredItems.map((f, i) => (
-                  <div key={i} className={`text-[11px] font-mono px-3 py-1.5 border ${f.action === "removed" ? "bg-red-950/30 border-red-900/30 text-red-400" : "bg-amber-950/30 border-amber-900/30 text-amber-400"}`}>
-                    <span className="font-bold">
+                  <div
+                    key={i}
+                    className="text-xs rounded px-3 py-1.5"
+                    style={{
+                      background: f.action === "removed" ? "rgba(239, 68, 68, 0.08)" : "rgba(234, 179, 8, 0.08)",
+                      border: `1px solid ${f.action === "removed" ? "rgba(239, 68, 68, 0.2)" : "rgba(234, 179, 8, 0.2)"}`,
+                    }}
+                  >
+                    <span
+                      className="font-mono font-semibold"
+                      style={{ color: f.action === "removed" ? "#ef4444" : "#eab308" }}
+                    >
                       {f.action === "removed" ? "DEL" : "RWD"}
                     </span>{" "}
-                    <span className="text-neutral-500">[{f.type}]</span>{" "}
-                    <span className="text-neutral-300">{f.original}</span>
-                    <span className="text-neutral-600"> — {f.reason}</span>
+                    <span style={{ color: "var(--text-tertiary)" }}>[{f.type}]</span>{" "}
+                    <span className="font-medium" style={{ color: "var(--text-primary)" }}>{f.original}</span>
+                    <span style={{ color: "var(--text-tertiary)" }}> — {f.reason}</span>
                   </div>
                 ))}
               </div>

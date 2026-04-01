@@ -59,6 +59,15 @@ const EXAMPLES: { label: string; type: string; description: string; budget?: str
   },
 ];
 
+const inputStyle: React.CSSProperties = {
+  background: "var(--bg-panel)",
+  border: "1px solid var(--border-default)",
+  color: "var(--text-primary)",
+  borderRadius: "var(--radius-md)",
+};
+
+const inputFocusClass = "w-full px-4 py-2 outline-none transition-colors duration-200";
+
 export default function BriefForm() {
   const [input, setInput] = useState<BriefInput>({
     projectName: "",
@@ -100,23 +109,29 @@ export default function BriefForm() {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-10">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <FormField label="项目名称 Project Name" optional>
+    <div className="grid md:grid-cols-2 gap-8">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
+            项目名称 Project Name <span className="font-normal" style={{ color: "var(--text-tertiary)" }}>（可选 optional）</span>
+          </label>
           <input
             type="text"
             value={input.projectName}
             onChange={(e) => setInput({ ...input, projectName: e.target.value })}
-            className="w-full px-4 py-2.5 border rounded-none text-sm"
+            className={inputFocusClass}
+            style={inputStyle}
             placeholder="例如：XX 品牌苏州中心店"
           />
-        </FormField>
+        </div>
 
-        <FormField label="项目类型 Project Type">
+        <div>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>项目类型 Project Type</label>
           <select
             value={input.projectType}
             onChange={(e) => setInput({ ...input, projectType: e.target.value })}
-            className="w-full px-4 py-2.5 border rounded-none text-sm"
+            className={inputFocusClass}
+            style={inputStyle}
           >
             <option value="">选择类型 Select Type</option>
             {PROJECT_TYPES.map((t) => (
@@ -125,13 +140,20 @@ export default function BriefForm() {
               </option>
             ))}
           </select>
-        </FormField>
+        </div>
 
-        <FormField label="项目需求描述 Description" required hint="用自然语言描述项目需求，写得越具体，生成的 brief 越准确。">
+        <div>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
+            项目需求描述 Description<span style={{ color: "#ef4444" }}>*</span>
+          </label>
+          <p className="text-xs mb-2" style={{ color: "var(--text-tertiary)" }}>
+            用自然语言描述项目需求，写得越具体，生成的 brief 越准确。
+          </p>
           <textarea
             value={input.description}
             onChange={(e) => setInput({ ...input, description: e.target.value })}
-            className="w-full px-4 py-3 border rounded-none text-sm resize-none"
+            className="w-full px-4 py-3 outline-none resize-none transition-colors duration-200"
+            style={inputStyle}
             rows={6}
             placeholder="例如：我们准备在商场开一家店，面积大约120㎡，希望空间有高级感……"
           />
@@ -141,48 +163,65 @@ export default function BriefForm() {
                 key={ex.label}
                 type="button"
                 onClick={() => fillExample(ex)}
-                className="px-3 py-1 text-[11px] border border-neutral-700 hover:border-neutral-500 hover:text-white transition-colors text-neutral-500 tracking-wide"
+                className="px-3 py-1 text-xs rounded-full transition-colors duration-200"
+                style={{
+                  border: "1px solid var(--border-default)",
+                  color: "var(--text-tertiary)",
+                  background: "transparent",
+                }}
               >
                 {ex.label}
               </button>
             ))}
           </div>
-        </FormField>
+        </div>
 
-        <FormField label="预算情况 Budget" optional>
+        <div>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
+            预算情况 Budget <span className="font-normal" style={{ color: "var(--text-tertiary)" }}>（可选 optional）</span>
+          </label>
           <input
             type="text"
             value={input.budget}
             onChange={(e) => setInput({ ...input, budget: e.target.value })}
-            className="w-full px-4 py-2.5 border rounded-none text-sm"
+            className={inputFocusClass}
+            style={inputStyle}
             placeholder="例如：5万 / 10-15万 / 预算有限"
           />
-        </FormField>
+        </div>
 
-        <FormField label="时间要求 Timeline" optional>
+        <div>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
+            时间要求 Timeline <span className="font-normal" style={{ color: "var(--text-tertiary)" }}>（可选 optional）</span>
+          </label>
           <input
             type="text"
             value={input.timeline}
             onChange={(e) => setInput({ ...input, timeline: e.target.value })}
-            className="w-full px-4 py-2.5 border rounded-none text-sm"
+            className={inputFocusClass}
+            style={inputStyle}
             placeholder="例如：11月开业 / December start / 尽快"
           />
-        </FormField>
+        </div>
 
         <button
           type="submit"
           disabled={loading || !input.projectType || !input.description.trim()}
-          className="w-full py-3.5 bg-white text-black text-sm font-medium tracking-wide uppercase hover:bg-neutral-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-full py-3 font-medium rounded-full transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+          style={{
+            background: "var(--accent-indigo)",
+            color: "#ffffff",
+          }}
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
-              <span className="w-3.5 h-3.5 border border-black/30 border-t-black rounded-full animate-spin" />
+              <span className="w-3.5 h-3.5 border border-white/30 border-t-white rounded-full animate-spin" />
               生成中 Generating...
             </span>
           ) : (
             <span className="flex flex-col items-center leading-tight">
               <span>生成提案</span>
-              <span className="text-[10px] text-black/50 tracking-widest font-normal">GENERATE BRIEF</span>
+              <span className="text-[10px] opacity-60 tracking-widest font-normal">GENERATE BRIEF</span>
             </span>
           )}
         </button>
@@ -192,51 +231,36 @@ export default function BriefForm() {
         {output ? (
           <OutputCard output={output} />
         ) : error ? (
-          <div className="border border-red-900/50 bg-red-950/30 min-h-[500px] p-6 flex flex-col justify-center">
-            <p className="text-sm font-medium text-red-400 mb-1">生成失败</p>
-            <p className="text-[10px] text-red-500/50 tracking-wide uppercase mb-3">GENERATION FAILED</p>
-            <p className="text-sm text-red-400/70 leading-relaxed">{error}</p>
+          <div
+            className="rounded-lg min-h-[500px] p-6 flex flex-col justify-center"
+            style={{
+              border: "1px solid rgba(239, 68, 68, 0.3)",
+              background: "rgba(239, 68, 68, 0.08)",
+            }}
+          >
+            <p className="text-sm font-medium mb-1" style={{ color: "#ef4444" }}>生成失败</p>
+            <p className="text-[10px] tracking-wide uppercase mb-3" style={{ color: "rgba(239, 68, 68, 0.5)" }}>GENERATION FAILED</p>
+            <p className="text-sm leading-relaxed" style={{ color: "#fca5a5" }}>{error}</p>
           </div>
         ) : (
-          <div className="h-full flex flex-col items-center justify-center border border-dashed border-neutral-800 min-h-[500px] px-8">
-            <div className="w-8 h-px bg-neutral-700 mb-6" />
-            <p className="text-neutral-500 text-xs tracking-wide mb-1">输出区域</p>
-            <p className="text-neutral-700 text-[10px] tracking-widest uppercase mb-4">OUTPUT AREA</p>
-            <p className="text-neutral-600 text-xs text-center max-w-xs leading-relaxed mb-1">
+          <div
+            className="h-full flex flex-col items-center justify-center rounded-lg min-h-[500px] px-8"
+            style={{
+              border: "1px dashed var(--border-default)",
+            }}
+          >
+            <div className="w-8 h-px mb-6" style={{ background: "var(--border-default)" }} />
+            <p className="text-xs tracking-wide mb-1" style={{ color: "var(--text-tertiary)" }}>输出区域</p>
+            <p className="text-[10px] tracking-widest uppercase mb-4" style={{ color: "var(--text-tertiary)" }}>OUTPUT AREA</p>
+            <p className="text-xs text-center max-w-xs leading-relaxed mb-1" style={{ color: "var(--text-secondary)" }}>
               填写项目描述并选择类型，系统将自动生成结构化项目提案。
             </p>
-            <p className="text-neutral-700 text-[11px] text-center max-w-xs leading-relaxed">
+            <p className="text-[11px] text-center max-w-xs leading-relaxed" style={{ color: "var(--text-tertiary)" }}>
               Fill in the description and select a type to generate a structured brief.
             </p>
           </div>
         )}
       </div>
-    </div>
-  );
-}
-
-function FormField({
-  label,
-  optional,
-  required,
-  hint,
-  children,
-}: {
-  label: string;
-  optional?: boolean;
-  required?: boolean;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <label className="block text-xs font-medium tracking-wide uppercase text-neutral-400 mb-2">
-        {label}
-        {optional && <span className="text-neutral-600 font-normal lowercase tracking-normal ml-2">选填 optional</span>}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
-      {hint && <p className="text-[11px] text-neutral-600 mb-2">{hint}</p>}
-      {children}
     </div>
   );
 }
