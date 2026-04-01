@@ -347,6 +347,26 @@ async function callModel(input: BriefInput): Promise<BriefOutput> {
 
 export async function POST(request: Request) {
   try {
+    // ── Auth check ──
+    const authHeader = request.headers.get("authorization");
+    const token = authHeader?.replace("Bearer ", "");
+
+    if (!token) {
+      return NextResponse.json({ error: "请先验证邮箱 / Please verify your email first", code: "AUTH_REQUIRED" }, { status: 401 });
+    }
+
+    const { verifyToken, incrementUsage } = await import("@/lib/auth");
+    const user = await verifyToken(token);
+    if (!user) {
+      return NextResponse.json({ error: "登录已过期，请重新验证 / Session expired", code: "AUTH_EXPIRED" }, { status: 401 });
+    }
+
+    const { allowed, remaining } = await incrementUsage(user.email);
+    if (!allowed) {
+      return NextResponse.json({ error: "免费额度已用完，请联系 seafhven@gmail.com 获取更多次数", code: "QUOTA_EXCEEDED" }, { status: 429 });
+    }
+
+    // ── Generate ──
     const body = (await request.json()) as GenerateBriefRequestBody;
     const input = body.input;
 
@@ -356,7 +376,7 @@ export async function POST(request: Request) {
 
     const output = await callModel(input);
     const context = preprocessBriefInput(input);
-    return NextResponse.json({ output, context });
+    return NextResponse.json({ output, context, remaining });
   } catch (error) {
     const message = error instanceof Error ? error.message : "生成失败，请稍后再试。";
     return NextResponse.json({ error: message }, { status: 500 });

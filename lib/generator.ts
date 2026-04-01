@@ -2,18 +2,25 @@ import type { BriefInput, BriefOutput } from "./types";
 
 interface GenerateBriefApiResponse {
   output: BriefOutput;
+  remaining?: number;
 }
 
 interface GenerateBriefApiErrorResponse {
   error?: string;
+  code?: string;
 }
 
-export async function generateBrief(input: BriefInput): Promise<BriefOutput> {
+export async function generateBrief(input: BriefInput, token?: string): Promise<{ output: BriefOutput; remaining?: number }> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const response = await fetch("/api/generate-brief", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers,
     body: JSON.stringify({ input }),
   });
 
@@ -25,10 +32,29 @@ export async function generateBrief(input: BriefInput): Promise<BriefOutput> {
   }
 
   if (!response.ok || !("output" in payload)) {
-    const errorMessage = "error" in payload ? payload.error : undefined;
-    throw new Error(errorMessage || "生成失败，请稍后再试。");
+    const errorPayload = payload as GenerateBriefApiErrorResponse;
+    if (errorPayload.code === "AUTH_REQUIRED" || errorPayload.code === "AUTH_EXPIRED") {
+      throw new AuthError(errorPayload.error || "请先验证邮箱");
+    }
+    if (errorPayload.code === "QUOTA_EXCEEDED") {
+      throw new QuotaError(errorPayload.error || "免费额度已用完");
+    }
+    throw new Error(errorPayload.error || "生成失败，请稍后再试。");
   }
 
-  // Server already applies full pipeline: facts → rules → LLM → conflict filter → safeguards
-  return payload.output;
+  return { output: payload.output, remaining: payload.remaining };
+}
+
+export class AuthError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AuthError";
+  }
+}
+
+export class QuotaError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "QuotaError";
+  }
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { BriefInput, BriefOutput } from "@/lib/types";
-import { generateBrief } from "@/lib/generator";
+import { generateBrief, AuthError, QuotaError } from "@/lib/generator";
 import OutputCard from "./OutputCard";
 
 const PROJECT_TYPES = [
@@ -68,7 +68,12 @@ const inputStyle: React.CSSProperties = {
 
 const inputFocusClass = "w-full px-4 py-2 outline-none transition-colors duration-200";
 
-export default function BriefForm() {
+export default function BriefForm({ token, remaining, onRemainingChange, onAuthExpired }: {
+  token?: string;
+  remaining?: number;
+  onRemainingChange?: (n: number) => void;
+  onAuthExpired?: () => void;
+}) {
   const [input, setInput] = useState<BriefInput>({
     projectName: "",
     projectType: "",
@@ -86,10 +91,15 @@ export default function BriefForm() {
     setLoading(true);
     setError(null);
     try {
-      const result = await generateBrief(input);
-      setOutput(result);
+      const result = await generateBrief(input, token);
+      setOutput(result.output);
+      if (result.remaining !== undefined) onRemainingChange?.(result.remaining);
     } catch (err) {
       setOutput(null);
+      if (err instanceof AuthError) {
+        onAuthExpired?.();
+        return;
+      }
       setError(err instanceof Error ? err.message : "生成失败，请稍后再试。");
     } finally {
       setLoading(false);
@@ -225,6 +235,11 @@ export default function BriefForm() {
             </span>
           )}
         </button>
+        {remaining !== undefined && (
+          <p className="text-center text-xs mt-2" style={{ color: remaining > 0 ? "var(--text-tertiary)" : "#ef4444" }}>
+            {remaining > 0 ? `剩余 ${remaining} 次免费生成 / ${remaining} free generation(s) left` : "免费额度已用完 / Free quota exhausted"}
+          </p>
+        )}
       </form>
 
       <div>

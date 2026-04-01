@@ -1,4 +1,7 @@
+"use client";
+
 import BriefForm from "@/components/BriefForm";
+import { AuthGate } from "@/components/AuthGate";
 import Link from "next/link";
 
 export default function BuilderPage() {
@@ -36,18 +39,34 @@ export default function BuilderPage() {
             <br />
             <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>Describe your project in natural language — the system extracts requirements, identifies gaps, flags risks, and suggests directions.</span>
           </p>
-          <p
-            className="mt-3 text-xs rounded-lg px-3 py-2"
-            style={{
-              color: "var(--text-tertiary)",
-              border: "1px solid var(--border-default)",
-              background: "var(--bg-secondary)",
-            }}
-          >
-            This is a demo prototype for early-stage brief structuring and proposal direction, not a final costing/review/construction system.
-          </p>
         </div>
-        <BriefForm />
+
+        <AuthGate>
+          {({ token, remaining, updateRemaining, clearAuth }) => (
+            <>
+              <div className="mb-6 flex items-center justify-between">
+                <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+                  {remaining > 0
+                    ? `剩余 ${remaining} 次免费生成`
+                    : "免费额度已用完，联系 seafhven@gmail.com 获取更多"}
+                </p>
+                <button
+                  onClick={clearAuth}
+                  className="text-xs px-3 py-1 rounded-full transition-colors"
+                  style={{ color: "var(--text-tertiary)", border: "1px solid var(--border-default)" }}
+                >
+                  退出 Logout
+                </button>
+              </div>
+              <BriefForm
+                token={token}
+                remaining={remaining}
+                onRemainingChange={updateRemaining}
+                onAuthExpired={clearAuth}
+              />
+            </>
+          )}
+        </AuthGate>
       </div>
     </main>
   );
